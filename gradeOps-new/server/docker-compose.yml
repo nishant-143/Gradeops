@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: gradeops-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - HOST=0.0.0.0
+      - PORT=8000
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - gradeops-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
+    image: postgres:15-alpine
+    container_name: gradeops-db
+    environment:
+      - POSTGRES_USER=gradeops
+      - POSTGRES_PASSWORD=gradeops_password
+      - POSTGRES_DB=gradeops
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - gradeops-network
+
+networks:
+  gradeops-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
