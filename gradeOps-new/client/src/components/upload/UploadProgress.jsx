@@ -1,1 +1,0 @@
-// UploadProgress component

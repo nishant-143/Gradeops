@@ -1,1 +1,0 @@
-// CriteriaEditor component
